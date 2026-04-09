@@ -1,0 +1,5 @@
+db.url=jdbc:mysql://localhost:3306/series_zone_analytics
+db.username=root
+db.password=your_password
+python.executable=python
+python.predict.script=ml/predict_retention.py

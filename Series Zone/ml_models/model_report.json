@@ -1,0 +1,37 @@
+{
+  "timestamp": "2026-04-06T20:22:33.546828",
+  "dataset_info": {
+    "total_sessions": 500,
+    "retention_rate": 0.48,
+    "features": 18
+  },
+  "model_performance": {
+    "accuracy": 0.51,
+    "precision": 0.4864864864864865,
+    "recall": 0.375,
+    "f1": 0.4235294117647059,
+    "auc_roc": 0.5556891025641025,
+    "confusion_matrix": [
+      [
+        33,
+        19
+      ],
+      [
+        30,
+        18
+      ]
+    ]
+  },
+  "top_features": {
+    "user_rating": 0.09472306054670099,
+    "session_duration_minutes": 0.07815550089153575,
+    "movie_rating": 0.07210034840957764,
+    "engagement_score": 0.06850097758225274,
+    "engagement_squared": 0.06627238209101227,
+    "rating_engagement": 0.06605808886955858,
+    "average_completion_rate": 0.06588051879799317,
+    "watch_percentage": 0.06572352882356616,
+    "watch_engagement_interaction": 0.06476768038269166,
+    "runtime_squared": 0.059347136419657165
+  }
+}

@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Movie Details - Series Zone</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../css/style.css?v=2">
+    <link rel="stylesheet" href="../css/admin.css">
+    <link rel="stylesheet" href="../css/profile.css">
+    <link rel="stylesheet" href="../css/footer.css">
+</head>
+<body class="dark-theme">
+    <!-- Top Navigation Back Button -->
+    <nav class="navbar navbar-dark fixed-top">
+        <div class="container">
+            <a href="../index.html" class="btn btn-outline-light">
+                <i class="fas fa-arrow-left"></i> Back to Home
+            </a>
+            <span class="navbar-text">
+                <i class="fas fa-film"></i> Series Zone
+            </span>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main style="margin-top: 70px; padding-bottom: 100px;">
+        <div class="container-fluid">
+            <div class="row">
+                <!-- Left: Poster & Quick Actions -->
+                <div class="col-md-4">
+                    <div class="poster-section">
+                        <img id="detailPoster" src="" alt="Movie Poster" class="img-fluid rounded shadow-lg">
+                        <div class="actions-panel mt-3">
+                            <button id="playTrailerBtn" class="btn btn-danger btn-lg w-100 mb-2">
+                                <i class="fas fa-play"></i> Play Trailer
+                            </button>
+                            <button id="addToListBtn" class="btn btn-outline-light w-100 mb-2">
+                                <i class="fas fa-plus"></i> Add to My List
+                            </button>
+                            <button id="watchNowBtn" class="btn btn-primary btn-lg w-100">
+                                <i class="fas fa-film"></i> Watch Now
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right: Details -->
+                <div class="col-md-8">
+                    <h1 id="detailTitle"></h1>
+                    <div class="movie-meta mb-4">
+                        <span id="detailRating" class="badge bg-danger me-2"></span>
+                        <span id="detailYear" class="text-muted me-2"></span>
+                        <span id="detailGenres" class="text-muted"></span>
+                    </div>
+                    <p id="detailOverview" class="lead"></p>
+                    
+                    <!-- Stats Row -->
+                    <div class="row mb-4">
+                        <div class="col">
+                            <div class="stat-box">
+                                <h5>Popularity</h5>
+                                <div class="progress">
+                                    <div id="popularityBar" class="progress-bar bg-success" style="width: 0%"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="stat-box">
+                                <h5>Vote Average</h5>
+                                <div id="voteAverage"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Cast -->
+                    <h4>Cast & Crew</h4>
+                    <div id="castList" class="cast-grid"></div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer (same as main) -->
+    <footer class="footer fade-in">
+        <!-- Same footer HTML from index.html -->
+        <div class="footer-container">
+            <!-- Newsletter etc. - abbreviated -->
+            <div style="text-align: center; padding: 2rem; color: #888;">
+                <small>Movie Details Page | Back to <a href="../index.html">Home</a></small>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // TMDB API instance
+        class SimpleTMDB {
+            constructor() {
+                this.apiKey = '7a0abbf4cd791d438bf30b02c6eefc74';
+                this.baseURL = 'https://api.themoviedb.org/3';
+            }
+
+            async getMovieDetails(id) {
+                try {
+                    const response = await fetch(`/api/tmdb?path=/movie/${encodeURIComponent(id)}&append_to_response=credits,videos`);
+                    if (!response.ok) {
+                        throw new Error(`TMDB proxy failed with ${response.status}`);
+                    }
+                    return await response.json();
+                } catch (e) {
+                    console.error('TMDB error', e);
+                    return null;
+                }
+            }
+
+            getPoster(path, size = 'w500') {
+                return path ? `/api/tmdb-image?size=${encodeURIComponent(size)}&path=${encodeURIComponent(path)}` : 'https://via.placeholder.com/500x750?text=No+Poster';
+            }
+        }
+
+        const tmdb = new SimpleTMDB();
+
+        // Load movie data from URL param
+        async function loadMovieDetails() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const movieId = urlParams.get('id');
+            if (!movieId) {
+                document.body.innerHTML = '<h1 style="text-align: center; margin-top: 100px;">Movie not found</h1>';
+                return;
+            }
+
+            try {
+                const movie = await tmdb.getMovieDetails(movieId);
+                if (!movie) {
+                    document.body.innerHTML = '<h1 style="text-align: center; margin-top: 100px;">Movie data not available</h1>';
+                    return;
+                }
+
+                // Populate details
+                document.getElementById('detailTitle').textContent = movie.title;
+                document.getElementById('detailPoster').src = tmdb.getPoster(movie.poster_path);
+                document.getElementById('detailPoster').alt = movie.title;
+                document.getElementById('detailOverview').textContent = movie.overview;
+                document.getElementById('detailRating').textContent = Math.round(movie.vote_average * 10) + '%';
+                document.getElementById('detailYear').textContent = new Date(movie.release_date).getFullYear();
+                document.getElementById('detailGenres').textContent = movie.genres.map(g => g.name).join(', ');
+
+                // Progress bar
+                const popularity = Math.min(movie.popularity / 100, 100);
+                document.getElementById('popularityBar').style.width = popularity + '%';
+
+                // Cast
+                const castHtml = movie.credits.cast.slice(0, 10).map(person => `
+                    <div class="cast-member">
+                        <img src="${tmdb.getPoster(person.profile_path, 'w92')}" alt="${person.name}" onerror="this.src='https://via.placeholder.com/92x138'">
+                        <h6>${person.name}</h6>
+                        <p>${person.character}</p>
+                    </div>
+                `).join('');
+                document.getElementById('castList').innerHTML = castHtml;
+
+                // Trailer
+                const trailer = movie.videos.results.find(v => v.type === 'Trailer' && v.site === 'YouTube');
+                if (trailer) {
+                    document.getElementById('playTrailerBtn').onclick = () => {
+                        window.open(`https://www.youtube.com/watch?v=${trailer.key}`, '_blank');
+                    };
+                }
+
+            } catch (e) {
+                console.error(e);
+            }
+        }
+
+        // Load on page ready
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', loadMovieDetails);
+        } else {
+            loadMovieDetails();
+        }
+    </script>
+</body>
+</html>

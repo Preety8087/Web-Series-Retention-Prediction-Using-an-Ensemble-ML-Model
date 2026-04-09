@@ -1,0 +1,232 @@
+<!-- Professional ML Dashboard HTML Template -->
+<!-- Add this to index.html inside the ML Insights Modal -->
+
+<div class="ml-dashboard-container">
+    <!-- Header Section -->
+    <div class="ml-dashboard-header">
+        <h1>
+            <i class="fas fa-brain"></i>
+            ML Intelligence Dashboard
+        </h1>
+        <p>Advanced retention prediction & behavioral analytics platform</p>
+        <div class="dashboard-meta">
+            <div class="meta-item">
+                <strong>Platform:</strong> Series Zone
+            </div>
+            <div class="meta-item">
+                <strong>Status:</strong> <span style="color: #46D369;">● Active</span>
+            </div>
+            <div class="meta-item">
+                <strong>Last Update:</strong> <span id="lastUpdateTime">Just now</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Overview Cards -->
+    <div class="ml-overview-grid">
+        <!-- Card 1: Total Sessions -->
+        <div class="ml-overview-card">
+            <div class="card-icon">📊</div>
+            <div class="card-label">Total Sessions</div>
+            <div class="card-value" id="totalSessionsCard">0</div>
+            <div class="card-subtitle">Watch sessions started</div>
+            <div class="card-progress">
+                <div class="card-progress-bar" style="width: 100%"></div>
+            </div>
+        </div>
+
+        <!-- Card 2: Avg Completion -->
+        <div class="ml-overview-card">
+            <div class="card-icon">✅</div>
+            <div class="card-label">Avg Completion</div>
+            <div class="card-value" id="avgCompletionCard">0%</div>
+            <div class="card-subtitle">Average watch percentage</div>
+            <div class="card-progress">
+                <div class="card-progress-bar" id="completionProgress" style="width: 50%"></div>
+            </div>
+        </div>
+
+        <!-- Card 3: Total Minutes -->
+        <div class="ml-overview-card">
+            <div class="card-icon">⏱️</div>
+            <div class="card-label">Total Minutes</div>
+            <div class="card-value" id="totalMinutesCard">0</div>
+            <div class="card-subtitle">Cumulative watch time</div>
+            <div class="card-progress">
+                <div class="card-progress-bar" style="width: 75%"></div>
+            </div>
+        </div>
+
+        <!-- Card 4: Churn Risk -->
+        <div class="ml-overview-card">
+            <div class="card-icon">🚨</div>
+            <div class="card-label">Churn Risk</div>
+            <div class="card-value" id="churnRiskCard">0%</div>
+            <div class="card-subtitle">User retention threat</div>
+            <div class="card-progress">
+                <div class="card-progress-bar" style="width: 30%; background: linear-gradient(90deg, #ff6b6b, #ffaa00);"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content Grid -->
+    <div class="ml-content-grid">
+        <!-- Left Column: Analytics -->
+        <div class="ml-analytics-card">
+            <div class="analytics-header">
+                <h3>
+                    <i class="fas fa-chart-bar analytics-header-icon"></i>
+                    Genre Retention Analysis
+                </h3>
+                <div class="analytics-controls">
+                    <button class="control-btn active">All Genres</button>
+                    <button class="control-btn">Top 3</button>
+                </div>
+            </div>
+
+            <!-- Genre Stats -->
+            <div class="genre-stats-container" id="genreStatsContainer">
+                <p style="color: #888; text-align: center; padding: 2rem;">
+                    Loading genre analytics...
+                </p>
+            </div>
+
+            <!-- Session Timeline -->
+            <div class="session-timeline" id="sessionTimelineContainer">
+                <h4 style="color: #fff; margin: 2rem 0 1rem 0; padding-bottom: 1rem; border-bottom: 1px solid rgba(139, 92, 246, 0.3);">
+                    <i class="fas fa-history" style="margin-right: 0.5rem; color: #8B5CF6;"></i>
+                    Recent Sessions
+                </h4>
+                <div class="timeline-container" id="timelineItems">
+                    <p style="color: #888;">Loading sessions...</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Column: Predictions & Stats -->
+        <div>
+            <!-- Predictions Cards -->
+            <div style="margin-bottom: 2rem;">
+                <h3 style="color: #fff; margin-bottom: 1rem;">
+                    <i class="fas fa-crystal-ball" style="color: #8B5CF6; margin-right: 0.5rem;"></i>
+                    Smart Predictions
+                </h3>
+                <div class="predictions-grid" id="predictionsGrid">
+                    <div class="prediction-card">
+                        <div class="prediction-header">
+                            <div class="prediction-icon">🎯</div>
+                            <div class="prediction-title">Next Genre</div>
+                        </div>
+                        <div class="prediction-content">
+                            <div class="prediction-value" id="nextGenreValue">-</div>
+                            <div class="prediction-description">Recommended to explore</div>
+                        </div>
+                    </div>
+
+                    <div class="prediction-card">
+                        <div class="prediction-header">
+                            <div class="prediction-icon">👤</div>
+                            <div class="prediction-title">User Profile</div>
+                        </div>
+                        <div class="prediction-content">
+                            <div class="prediction-value" style="font-size: 1.2rem; color: #00d4ff;" id="userProfileValue">-</div>
+                            <div class="prediction-description">Based on behavior</div>
+                        </div>
+                    </div>
+
+                    <div class="prediction-card">
+                        <div class="prediction-header">
+                            <div class="prediction-icon">🔴</div>
+                            <div class="prediction-title">Risk Level</div>
+                        </div>
+                        <div class="prediction-content">
+                            <div class="prediction-value" id="riskLevelValue">-</div>
+                            <div class="prediction-description">Engagement score</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar Stats -->
+            <div class="ml-sidebar-card">
+                <h4 style="color: #fff; margin: 0 0 1.5rem 0; padding-bottom: 1rem; border-bottom: 1px solid rgba(139, 92, 246, 0.3);">
+                    <i class="fas fa-sliders-h" style="color: #8B5CF6; margin-right: 0.5rem;"></i>
+                    Quick Stats
+                </h4>
+                
+                <div class="sidebar-stat">
+                    <span class="sidebar-stat-label">Most Active Day</span>
+                    <span class="sidebar-stat-value" id="activeDay">-</span>
+                </div>
+
+                <div class="sidebar-stat">
+                    <span class="sidebar-stat-label">Avg Session</span>
+                    <span class="sidebar-stat-value" id="avgSession">0m</span>
+                </div>
+
+                <div class="sidebar-stat">
+                    <span class="sidebar-stat-label">Genres Explored</span>
+                    <span class="sidebar-stat-value" id="genresExplored">0</span>
+                </div>
+
+                <div class="sidebar-stat">
+                    <span class="sidebar-stat-label">Movies Watched</span>
+                    <span class="sidebar-stat-value" id="moviesWatched">0</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Metrics Table -->
+    <div class="ml-analytics-card" style="margin-top: 2rem;">
+        <div class="analytics-header">
+            <h3>
+                <i class="fas fa-table analytics-header-icon"></i>
+                Detailed Metrics
+            </h3>
+            <div class="analytics-controls">
+                <button class="control-btn active">All Data</button>
+                <button class="control-btn">This Week</button>
+                <button class="control-btn">This Month</button>
+            </div>
+        </div>
+
+        <table class="metrics-table">
+            <thead>
+                <tr>
+                    <th>Genre</th>
+                    <th>Sessions</th>
+                    <th>Avg Watched</th>
+                    <th>Completion</th>
+                    <th>Total Minutes</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody id="metricsTableBody">
+                <tr>
+                    <td colspan="6" style="text-align: center; color: #888;">Loading metrics...</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Footer -->
+    <div class="ml-dashboard-footer">
+        <div>
+            <div class="footer-timestamp">
+                Last synced: <span id="syncTime">Just now</span>
+            </div>
+        </div>
+        <div class="footer-actions">
+            <button class="footer-btn" onclick="mlInsightsUI.refreshInsights()">
+                <i class="fas fa-sync-alt"></i> Refresh
+            </button>
+            <button class="footer-btn" onclick="mlInsightsUI.openMLInsights()">
+                <i class="fas fa-cog"></i> Settings
+            </button>
+            <button class="footer-btn primary" onclick="mlInsightsUI.savePreferences()">
+                <i class="fas fa-save"></i> Save Changes
+            </button>
+        </div>
+    </div>
+</div>

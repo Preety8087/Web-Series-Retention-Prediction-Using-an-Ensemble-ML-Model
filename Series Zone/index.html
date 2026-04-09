@@ -1,0 +1,916 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Series Zone - ML-Powered Entertainment Platform</title>
+    
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="assets/css/style.css?v=17">
+    <link rel="stylesheet" href="assets/css/series-zone.css">
+    <link rel="stylesheet" href="assets/css/profile.css">
+    <link rel="stylesheet" href="assets/css/footer.css">
+    <link rel="stylesheet" href="assets/css/admin-login.css">
+    <style>
+        .ml-modal-overlay {
+            position: fixed;
+            inset: 0;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0, 0, 0, 0.88);
+            z-index: 9999;
+        }
+
+        .ml-modal {
+            width: 100vw;
+            height: 100vh;
+            max-height: 100vh;
+            overflow: hidden;
+            border-radius: 0;
+            background: #0f1116;
+            border: none;
+            box-shadow: none;
+        }
+
+        .ml-modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 1.25rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .ml-modal-header h3 {
+            margin: 0;
+            color: #ffffff;
+            font-size: 1.1rem;
+            letter-spacing: 0.02em;
+        }
+
+        .ml-modal-close {
+            background: transparent;
+            border: none;
+            color: #ffffff;
+            font-size: 1.35rem;
+            cursor: pointer;
+        }
+
+        .ml-modal-body {
+            padding: 1.5rem 1.75rem 2rem;
+            color: #e7e7e7;
+            background: #0c0d11;
+            max-height: calc(100vh - 72px);
+            overflow-y: auto;
+        }
+
+        .ml-modal-loading {
+            color: #d2d2d2;
+            text-align: center;
+            font-size: 1rem;
+            padding: 2rem 0;
+        }
+
+        .ml-cinema-dashboard {
+            display: grid;
+            gap: 1.25rem;
+        }
+
+        .ml-cinema-hero {
+            min-height: 280px;
+            display: grid;
+            grid-template-columns: minmax(0, 1.5fr) minmax(280px, 0.85fr);
+            gap: 1rem;
+            padding: 1.35rem;
+            border-radius: 22px;
+            background: linear-gradient(135deg, #121826 0%, #0f1116 55%, #17111c 100%);
+            background-size: cover;
+            background-position: center;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            overflow: hidden;
+        }
+
+        .ml-cinema-kicker {
+            font-size: 0.82rem;
+            text-transform: uppercase;
+            letter-spacing: 0.18em;
+            color: #f4a261;
+            margin-bottom: 0.75rem;
+        }
+
+        .ml-cinema-hero-copy h2 {
+            margin: 0 0 0.85rem 0;
+            font-size: clamp(1.8rem, 3vw, 3rem);
+            line-height: 1;
+            color: #fff;
+        }
+
+        .ml-cinema-hero-copy p {
+            margin: 0;
+            max-width: 58ch;
+            color: rgba(255, 255, 255, 0.8);
+            line-height: 1.65;
+        }
+
+        .ml-cinema-badges {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.65rem;
+            margin-top: 1.1rem;
+        }
+
+        .ml-cinema-badges span {
+            padding: 0.5rem 0.8rem;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.08);
+            color: #fff;
+            font-size: 0.9rem;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .ml-cinema-feature-card {
+            align-self: end;
+            padding: 1rem;
+            border-radius: 18px;
+            background: rgba(10, 14, 22, 0.82);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        .ml-feature-caption {
+            color: #f4a261;
+            font-size: 0.78rem;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            margin-bottom: 0.55rem;
+        }
+
+        .ml-feature-title {
+            color: #fff;
+            font-size: 1.15rem;
+            font-weight: 700;
+        }
+
+        .ml-feature-meta,
+        .ml-feature-note {
+            margin-top: 0.45rem;
+            color: rgba(255, 255, 255, 0.75);
+            line-height: 1.5;
+        }
+
+        .ml-cinema-metrics,
+        .ml-cinema-columns {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 1rem;
+        }
+
+        .ml-cinema-columns {
+            grid-template-columns: 1.1fr 1.4fr;
+        }
+
+        .ml-metric-card,
+        .ml-panel,
+        .ml-stat-tile {
+            padding: 1.1rem;
+            border-radius: 18px;
+            background: #131722;
+            border: 1px solid rgba(133, 153, 202, 0.18);
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03);
+        }
+
+        .ml-metric-card.danger {
+            background: linear-gradient(180deg, rgba(89, 23, 31, 0.55), #131722);
+        }
+
+        .ml-metric-label,
+        .ml-panel-title,
+        .ml-stat-label {
+            color: #b7c0d7;
+            font-size: 0.9rem;
+        }
+
+        .ml-metric-value,
+        .ml-stat-value {
+            color: #fff;
+            font-size: 2rem;
+            font-weight: 800;
+            margin-top: 0.45rem;
+        }
+
+        .ml-metric-foot,
+        .ml-stat-subtext,
+        .ml-summary-line {
+            color: rgba(255, 255, 255, 0.72);
+            margin-top: 0.5rem;
+            line-height: 1.55;
+        }
+
+        .ml-panel-title {
+            color: #fff;
+            font-weight: 700;
+            margin-bottom: 0.9rem;
+            font-size: 1rem;
+        }
+
+        .ml-stat-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 0.9rem;
+        }
+
+        .ml-genre-meter {
+            margin-top: 0.8rem;
+            height: 8px;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.08);
+            overflow: hidden;
+        }
+
+        .ml-genre-meter span {
+            display: block;
+            height: 100%;
+            border-radius: inherit;
+            background: linear-gradient(90deg, #e63946, #f4a261);
+        }
+
+        .ml-cinema-posters {
+            display: grid;
+            grid-template-columns: repeat(5, minmax(0, 1fr));
+            gap: 0.9rem;
+        }
+
+        .ml-cinema-poster {
+            position: relative;
+            overflow: hidden;
+            border-radius: 18px;
+            min-height: 240px;
+            background: #0d1018;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            cursor: pointer;
+        }
+
+        .ml-cinema-poster img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .ml-cinema-poster-overlay {
+            position: absolute;
+            inset: auto 0 0 0;
+            padding: 0.85rem;
+            background: linear-gradient(180deg, transparent, rgba(6, 8, 13, 0.96));
+        }
+
+        .ml-cinema-rank,
+        .ml-cinema-poster-meta {
+            color: #f4a261;
+            font-size: 0.82rem;
+        }
+
+        .ml-cinema-poster-title {
+            color: #fff;
+            font-weight: 700;
+            margin: 0.35rem 0;
+            line-height: 1.3;
+        }
+
+        @media (max-width: 900px) {
+            .ml-cinema-hero,
+            .ml-cinema-columns,
+            .ml-cinema-metrics {
+                grid-template-columns: 1fr;
+            }
+
+            .ml-cinema-posters,
+            .ml-stat-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+        }
+
+        @media (max-width: 640px) {
+            .ml-cinema-posters {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .ml-modal-toast {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            z-index: 10000;
+            background: rgba(22, 163, 74, 0.96);
+            color: #ffffff;
+            padding: 0.85rem 1rem;
+            border-radius: 999px;
+            box-shadow: 0 24px 60px rgba(0, 0, 0, 0.25);
+            font-weight: 500;
+            animation: ml-toast-in 0.25s ease forwards;
+        }
+
+        @keyframes ml-toast-in {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+    <!-- Auth Modal Container -->
+    <div id="auth-container" class="auth-container">
+        <!-- Signup Form -->
+        <div id="signup-form" class="auth-form active">
+            <div class="auth-box auth-box-signup">
+                <div class="auth-showcase">
+                    <div class="auth-chip">Create Viewer Workspace</div>
+                    <div class="brand-logo auth-showcase-brand">
+                        <h1>Series Zone</h1>
+                        <p>Streaming Retention Intelligence</p>
+                    </div>
+                    <h2 class="auth-showcase-title">Build a production-style Series Zone workspace for real-time retention intelligence.</h2>
+                    <p class="auth-showcase-text">Create a viewer workspace to browse titles, generate watch sessions, and feed a realistic machine learning retention prediction project.</p>
+                    <div class="auth-feature-grid">
+                        <div class="auth-feature-card"><span>Retention ML</span><strong>Prediction-ready ensemble workflow</strong></div>
+                        <div class="auth-feature-card"><span>Viewer Logs</span><strong>Session evidence and watch behavior history</strong></div>
+                        <div class="auth-feature-card"><span>Project Flow</span><strong>Browse, watch, predict, and analyze</strong></div>
+                    </div>
+                </div>
+                <div class="auth-panel auth-panel-signup">
+                <div class="auth-panel-copy">
+                    <div class="auth-panel-kicker">Create Viewer Account</div>
+                    <h3>Open a new viewer workspace</h3>
+                    <p>Create a user account to browse content, generate watch history, and feed the real-time retention prediction project.</p>
+                    <h1>🎬 Series Zone</h1>
+                    <p>ML-Powered Entertainment Platform</p>
+                </div>
+                <form id="signupForm">
+                    <div class="form-group">
+                        <label>Full Name</label>
+                        <input type="text" id="signupName" placeholder="Enter your full name" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" id="signupEmail" placeholder="viewer@serieszone.ai" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Password</label>
+                        <input type="password" id="signupPassword" placeholder="Create a secure password" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-full">Create Viewer Account</button>
+                </form>
+                <p class="auth-panel-note">Your workspace will unlock browse access, watch tracking, retention analytics, and viewer-level predictions.</p>
+                <p class="auth-switch">Already registered? <a href="#" onclick="switchToLogin()">User Sign In</a> <span class="auth-switch-sep">|</span> <a href="#" onclick="switchToAdminLogin()">Admin Access</a></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Login Form -->
+        <div id="login-form" class="auth-form">
+            <div class="auth-box auth-box-login">
+                <div class="auth-showcase">
+                    <div class="auth-chip">User Access</div>
+                    <div class="brand-logo auth-showcase-brand">
+                        <h1>Series Zone</h1>
+                        <p>Streaming Retention Intelligence</p>
+                    </div>
+                    <h2 class="auth-showcase-title">Return to your viewer workspace.</h2>
+                    <p class="auth-showcase-text">Browse titles, generate viewing sessions, and inspect how real-time retention prediction reacts to user behavior.</p>
+                    <div class="auth-feature-grid">
+                        <div class="auth-feature-card"><span>Playback</span><strong>Session evidence ledger</strong></div>
+                        <div class="auth-feature-card"><span>Prediction</span><strong>Retention and drop-off signals</strong></div>
+                        <div class="auth-feature-card"><span>Analytics</span><strong>Viewer intelligence reporting</strong></div>
+                    </div>
+                </div>
+                <div class="auth-panel">
+                <div class="auth-panel-copy">
+                    <div class="auth-panel-kicker">User Sign In</div>
+                    <h3>Welcome back</h3>
+                    <p>Continue into your Series Zone viewer workspace to browse content, review watch activity, and inspect retention analytics.</p>
+                </div>
+                <div class="brand-logo">
+                    <h1>🎬 Series Zone</h1>
+                    <p>ML-Powered Entertainment Platform</p>
+                </div>
+                <form id="loginForm">
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" id="loginEmail" placeholder="viewer@serieszone.ai" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Password</label>
+                        <input type="password" id="loginPassword" placeholder="Enter your password" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-full">Open Viewer Workspace</button>
+                </form>
+                <p class="auth-panel-note">Use viewer access for browsing, watch tracking, history, profile intelligence, and prediction-driven recommendations.</p>
+                <p class="auth-switch">Need an account? <a href="#" onclick="switchToSignup()">Create One</a> <span class="auth-switch-sep">|</span> <a href="#" onclick="switchToAdminLogin()">Admin Access</a></p>
+                </div>
+            </div>
+        </div>
+
+        <div id="admin-login-form" class="auth-form">
+            <div class="auth-box auth-box-login">
+                <div class="auth-showcase">
+                    <div class="auth-chip">Admin Control Room</div>
+                    <div class="brand-logo auth-showcase-brand">
+                        <h1>Series Zone</h1>
+                        <p>Streaming Retention Intelligence</p>
+                    </div>
+                    <h2 class="auth-showcase-title">Open the admin control room for platform-wide retention intelligence.</h2>
+                    <p class="auth-showcase-text">Admin access is separated from viewer access. Use it to monitor platform activity, compare models, inspect tracked users, and review content performance.</p>
+                    <div class="auth-feature-grid">
+                        <div class="auth-feature-card"><span>Admin View</span><strong>Platform telemetry and user activity</strong></div>
+                        <div class="auth-feature-card"><span>Model Ops</span><strong>Model comparison and scoring review</strong></div>
+                        <div class="auth-feature-card"><span>Content Ops</span><strong>Retention actions and underperformance signals</strong></div>
+                    </div>
+                </div>
+                <div class="auth-panel">
+                <div class="auth-panel-copy">
+                    <div class="auth-panel-kicker">Admin Sign In</div>
+                    <h3>Open admin access</h3>
+                    <p>Use admin credentials to enter the dedicated workspace for platform monitoring, retention operations, and model evaluation.</p>
+                </div>
+                <form id="adminAccessForm">
+                    <div class="form-group">
+                        <label>Admin Email</label>
+                        <input type="email" id="adminAccessEmail" placeholder="admin@serieszone.ai" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Password</label>
+                        <input type="password" id="adminAccessPassword" placeholder="Enter admin password" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-full">Open Admin Workspace</button>
+                </form>
+                <p class="auth-panel-note">Admin access unlocks platform activity, model comparison, user intelligence, and content operations.</p>
+                <p class="auth-switch"><a href="#" onclick="switchToLogin()">User Sign In</a> <span class="auth-switch-sep">|</span> <a href="#" onclick="switchToSignup()">Create Viewer Account</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main App Container -->
+    <div id="app" class="app" style="display:none;">
+        <!-- Navigation Bar -->
+        <nav class="navbar">
+            <div class="navbar-container">
+                <div class="navbar-brand">
+                    <div class="brand-logo-netflix">
+                        <span class="logo-icon">🎬</span>
+                        <div class="brand-text">
+                            <div class="brand-title">SERIES ZONE</div>
+                            <div class="brand-subtitle">Streaming Intelligence</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="navbar-center">
+                    <div class="navbar-label" id="navbarRoleLabel">Viewer Navigation</div>
+
+                    <div id="viewerNavbar" class="navbar-nav role-navbar active" role="tablist" aria-label="Viewer Navigation">
+                    <button id="viewerBrowseBtn" class="nav-link active" data-page="ml-insights" title="Recommendations for you based on your viewing behavior and ML suggestions">
+                        <span>Recs</span>
+                        <small class="nav-badge" data-badge="browse">For You</small>
+                    </button>
+                    <button id="viewerAnalyticsBtn" class="nav-link" data-page="analytics" title="Shows your retention likelihood, watch trends, and personal analytics">
+                        <span>Retention</span>
+                        <small class="nav-badge" data-badge="analytics">ML</small>
+                    </button>
+                    <button id="viewerHistoryBtn" class="nav-link" data-page="history" title="Shows your personal watch history and playback timeline">
+                        <span>History</span>
+                        <small class="nav-badge" data-badge="history">0</small>
+                    </button>
+                    <button id="viewerProfileBtn" class="nav-link" data-page="profile" title="Shows your favorite genre, viewing profile, and personal preferences">
+                        <span>Genre</span>
+                        <small class="nav-badge" data-badge="profile">Top</small>
+                    </button>
+                    <button id="viewerMyListBtn" class="nav-link" data-page="my-list" data-action="watchlist" title="Shows movies and series you saved in your personal watchlist">
+                        <span>Watchlist</span>
+                        <small class="nav-badge" data-badge="watchlist">0</small>
+                    </button>
+                    </div>
+
+                    <div id="adminNavbar" class="navbar-nav role-navbar admin-navbar-set" role="tablist" aria-label="Admin Navigation">
+                    <button id="adminOverviewBtn" class="nav-link active" data-page="admin">
+                        <span>Overview</span>
+                        <small class="nav-badge" data-badge="admin-overview">Live</small>
+                    </button>
+                    <button id="adminRetentionBtn" class="nav-link" data-page="analytics">
+                        <span>Retention</span>
+                        <small class="nav-badge" data-badge="analytics">0</small>
+                    </button>
+                    <button id="adminTelemetryBtn" class="nav-link" data-page="history">
+                        <span>Telemetry</span>
+                        <small class="nav-badge" data-badge="history">0</small>
+                    </button>
+                    <button id="adminInsightsBtn" class="nav-link" data-page="ml-insights">
+                        <span>Ops AI</span>
+                        <small class="nav-badge" data-badge="ml-insights">AI</small>
+                    </button>
+                    <button id="adminEvaluationBtn" class="nav-link" data-page="my-list">
+                        <span>Evaluation</span>
+                        <small class="nav-badge" data-badge="admin-evaluation">ML</small>
+                    </button>
+                    <button id="adminProfilesBtn" class="nav-link" data-page="profile">
+                        <span>Profiles</span>
+                        <small class="nav-badge" data-badge="watchlist">0</small>
+                    </button>
+                    </div>
+                </div>
+
+                <div class="navbar-user">
+                    <div class="user-info">
+                        <div class="user-name" id="userNameDisplay">Viewer Name</div>
+                        <div class="user-role" id="userRoleDisplay">Viewer Workspace</div>
+                        <div class="user-email" id="userEmailDisplay">your@email.com</div>
+                        <div class="user-stats-mini">
+                            <span id="navSessionCount">0 sessions</span>
+                            <span id="navListCount">0 saved</span>
+                        </div>
+                    </div>
+                    <button id="logoutBtn" class="logout-btn">Logout</button>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <!-- Home Page -->
+            <section id="home-page" class="page active">
+                <!-- Hero Banner -->
+                <div id="hero-banner" class="hero-banner" style="background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.7)), url('') center/cover;">
+                    <div class="hero-content">
+                        <h2 id="heroTitle">Avatar: The Last Airbender</h2>
+                        <p id="heroDesc">Explore the world of Avatar...</p>
+                        <div class="hero-buttons">
+                            <button class="btn btn-primary" onclick="playTrailer()">▶ Play Trailer</button>
+                            <button class="btn btn-secondary" onclick="showDetails()">ℹ More Info</button>
+                        </div>
+                    </div>
+                </div>
+                <div id="heroSummaryGrid" class="hero-summary-grid"></div>
+
+                <!-- Trending Section -->
+                <div class="content-section">
+                    <h3>Trending Now</h3>
+                    <div id="trending-carousel" class="carousel">
+                        <!-- TMDB trending will load here -->
+                    </div>
+                </div>
+
+                <!-- Popular Section -->
+                <div class="content-section">
+                    <h3>Popular Movies</h3>
+                    <div id="popular-carousel" class="carousel">
+                        <!-- TMDB popular will load here -->
+                    </div>
+                </div>
+
+                <!-- Top Rated Section -->
+                <div class="content-section">
+                    <h3>Top Rated</h3>
+                    <div id="toprated-carousel" class="carousel">
+                        <!-- TMDB top rated will load here -->
+                    </div>
+                </div>
+
+                <!-- Recommendations Section -->
+                <div class="content-section">
+                    <h3>Because You Watched...</h3>
+                    <div id="recommendations-carousel" class="carousel">
+                        <!-- Recommendations will load here -->
+                    </div>
+                </div>
+            </section>
+
+
+
+            <!-- Recommendations Page -->
+            <section id="recommendations-page" class="page">
+                <div class="recommendations-container">
+                    <h2>Personalized Recommendations</h2>
+                    <div id="recommendations-grid" class="series-grid">
+                        <!-- Recommendations will be loaded here -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- Detail Page -->
+            <section id="detail-page" class="page">
+                <div class="detail-container">
+                    <button class="detail-close" onclick="app.switchPage('home-page')">✕ Back</button>
+                    <div id="detail-hero" class="detail-hero">
+                        <!-- Hero section will load here -->
+                    </div>
+                    <div class="detail-content">
+                        <div class="detail-main">
+                            <div class="movie-info-section">
+                                <h3>About This Show</h3>
+                                <div id="movie-info">
+                                    <!-- Movie info will load here -->
+                                </div>
+                            </div>
+                            <div class="cast-section">
+                                <h3>Cast & Crew</h3>
+                                <div id="cast-list" class="cast-grid">
+                                    <!-- Cast will load here -->
+                                </div>
+                            </div>
+                            <div class="similar-section">
+                                <h3>Similar Titles</h3>
+                                <div id="similar-carousel" class="carousel">
+                                    <!-- Similar titles will load here -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Video Player Page -->
+            <section id="video-page" class="page">
+                <div class="video-container">
+                    <button class="video-close" onclick="app.switchPage('detail-page')">✕ Back to Details</button>
+                    <div id="video-player" class="video-player">
+                        <!-- YouTube embed will load here -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- Analytics Dashboard -->
+            <section id="analytics-page" class="page">
+                <div class="analytics-container" style="background: radial-gradient(circle at top right, rgba(229, 9, 20, 0.08), transparent 20%), linear-gradient(180deg, rgba(10, 10, 12, 0.98), rgba(12, 12, 16, 0.98)); color: #fff;">
+                    <div class="page-shell-header">
+                        <button class="page-shell-back" onclick="app.switchPage('home-page')">← Back to Browse</button>
+                    </div>
+                    <h2>📊 Your Analytics Dashboard</h2>
+                    <div id="analytics-dashboard" class="analytics-dashboard-shell">
+                        <!-- Analytics will be displayed here -->
+                    </div>
+                </div>
+            </section>
+
+            <section id="ml-insights-page" class="page">
+                <div class="analytics-container ml-insights-page-shell">
+                    <div class="page-shell-header">
+                        <button class="page-shell-back" onclick="app.switchPage('home-page')">← Back to Browse</button>
+                    </div>
+                    <h2>Recommendations For Me</h2>
+                    <div id="ml-insights-content" class="ml-insights-content">
+                        <!-- ML insights will be displayed here -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- History Page -->
+            <section id="history-page" class="page">
+                <div class="history-container">
+                    <button class="history-close" onclick="app.switchPage('home-page')">X Back</button>
+                    
+                    <!-- History Header -->
+                    <div class="history-header">
+                        <div class="history-icon">📺</div>
+                        <div class="history-info">
+                            <h2>My watch history</h2>
+                            <p>Review your recent sessions, completion patterns, dropped titles, and playback behavior in one place.</p>
+                        </div>
+                    </div>
+
+                    <!-- Tabs -->
+                    <div class="history-tabs">
+                        <button class="history-tab active" onclick="switchHistoryTab('recent')">RECENT SESSIONS</button>
+                        <button class="history-tab" onclick="switchHistoryTab('watched')">WATCH-TIME LOSS</button>
+                        <button class="history-tab" onclick="switchHistoryTab('retention')">RETENTION OUTCOMES</button>
+                    </div>
+
+                    <!-- Tab Content -->
+                    <div id="history-tab-content" class="history-content">
+                        <!-- Tab content will load here -->
+                    </div>
+
+                    <!-- Session Ledger -->
+                    <div class="session-ledger">
+                        <div class="ledger-header">
+                            <h3>SESSION LEDGER</h3>
+                            <span class="ledger-label">Recent playback activity - <span id="entryCount">5</span> ENTRIES</span>
+                        </div>
+                        <div id="session-list" class="session-list">
+                            <!-- Sessions will load here -->
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Profile Page -->
+            <section id="profile-page" class="page">
+                <div class="profile-container">
+                    <div class="page-shell-header">
+                        <button class="page-shell-back" onclick="app.switchPage('home-page')">← Back to Browse</button>
+                    </div>
+                    <h2>My Favorite Genre</h2>
+                    <div id="profile-content">
+                        <!-- Profile content will be loaded here -->
+                    </div>
+                </div>
+            </section>
+
+            <section id="my-list-page" class="page">
+                <div class="profile-container">
+                    <div class="page-shell-header">
+                        <button class="page-shell-back" onclick="app.switchPage('home-page')">← Back to Browse</button>
+                    </div>
+                    <h2>My Watchlist</h2>
+                    <div id="my-list-content">
+                        <!-- My List content will be loaded here -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- Admin Panel -->
+            <section id="admin-page" class="page">
+                <div class="admin-container">
+                    <div class="page-shell-header">
+                        <button class="page-shell-back" onclick="app.switchPage('home-page')">← Back to Browse</button>
+                    </div>
+                    <h2>Admin Dashboard</h2>
+                    <div id="admin-dashboard">
+                        <!-- Admin controls will be loaded here -->
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- Footer -->
+        <footer id="footer" class="footer">
+            <div class="footer-subscription">
+                <h4>🎉 Stay Updated</h4>
+                <p>Get the latest news, reviews, and recommendations delivered to your inbox.</p>
+                <div class="newsletter-form">
+                    <input type="email" id="newsletterEmail" placeholder="Enter your email..." required>
+                    <button class="btn btn-primary" onclick="subscribeNewsletter()">Subscribe</button>
+                </div>
+            </div>
+            
+            <div class="footer-content">
+                <div class="footer-about">
+                    <h4>🎬 Series Zone</h4>
+                    <p>ML-Powered entertainment platform for personalized series and movie recommendations using advanced retention prediction models.</p>
+                    <div class="social-links">
+                        <a href="https://facebook.com" target="_blank">f</a>
+                        <a href="https://twitter.com" target="_blank">𝕏</a>
+                        <a href="https://instagram.com" target="_blank">📷</a>
+                        <a href="https://youtube.com" target="_blank">▶</a>
+                        <a href="https://linkedin.com" target="_blank">in</a>
+                    </div>
+                </div>
+
+                <div class="footer-section">
+                    <h4>BROWSE</h4>
+                    <ul>
+                        <li><a href="#" onclick="browseCategory('movies'); return false;">Movies</a></li>
+                        <li><a href="#" onclick="browseCategory('series'); return false;">Series</a></li>
+                        <li><a href="#" onclick="browseCategory('toprated'); return false;">Top Rated</a></li>
+                        <li><a href="#" onclick="browseCategory('trending'); return false;">Trending</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-section">
+                    <h4>ACCOUNT</h4>
+                    <ul>
+                        <li><a href="#" onclick="goToProfile(); return false;">My Profile</a></li>
+                        <li><a href="#" onclick="goToWatchlist(); return false;">My List</a></li>
+                        <li><a href="#" onclick="goToHistory(); return false;">Watch History</a></li>
+                        <li><a href="#" onclick="goToSettings(); return false;">Settings</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-section">
+                    <h4>SUPPORT</h4>
+                    <ul>
+                        <li><a href="#" onclick="showHelp(); return false;">Help Center</a></li>
+                        <li><a href="#" onclick="contactSupport(); return false;">Contact Us</a></li>
+                        <li><a href="#" onclick="reportIssue(); return false;">Report Issue</a></li>
+                        <li><a href="#" onclick="sendFeedback(); return false;">Feedback</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-section">
+                    <h4>LEGAL</h4>
+                    <ul>
+                        <li><a href="#" onclick="showTerms(); return false;">Terms of Service</a></li>
+                        <li><a href="#" onclick="showPrivacy(); return false;">Privacy Policy</a></li>
+                        <li><a href="#" onclick="showSecurity(); return false;">Security</a></li>
+                        <li><a href="#" onclick="showCookies(); return false;">Disclaimers</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-section">
+                    <h4>DOWNLOAD APP</h4>
+                    <div class="app-links">
+                        <a href="#" onclick="downloadApp('appstore'); return false;" class="app-link">🍎 App Store</a>
+                        <a href="#" onclick="downloadApp('playstore'); return false;" class="app-link">▶ Play Store</a>
+                    </div>
+                    <div class="language-selector">
+                        <label for="langSelect">LANGUAGE</label>
+                        <select id="langSelect" onchange="changeLanguage(this.value)">
+                            <option value="en">🇬🇧 English</option>
+                            <option value="hi">🇮🇳 हिंदी</option>
+                            <option value="es">🇪🇸 Español</option>
+                            <option value="fr">🇫🇷 Français</option>
+                            <option value="de">🇩🇪 Deutsch</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2026 Series Zone. All rights reserved. | ML-Powered Entertainment Platform</p>
+            </div>
+        </footer>
+    </div>
+
+    <!-- JavaScript Modules -->
+    <script src="assets/js/watch-tracking.js?v=8"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="assets/js/auth.js?v=10"></script>
+    <script src="assets/js/advanced-ml-system.js?v=2"></script>
+    <script src="assets/js/ml-insights-ui.js?v=8"></script>
+    <script src="assets/js/ml-recommendations.js"></script>
+    <script src="assets/js/admin.js"></script>
+    <script src="assets/js/admin-login.js?v=2"></script>
+    <script src="assets/js/professional-dashboard.js?v=2"></script>
+    <script src="assets/js/smart-recommendations.js?v=2"></script>
+    <script src="assets/js/tmdb-api.js?v=2"></script>
+    <script>
+        window.SERIES_ZONE_TMDB_API_KEY = '7a0abbf4cd791d438bf30b02c6eefc74';
+    </script>
+    <script src="assets/js/series-zone-app.js?v=40"></script>
+    <script src="assets/js/retention-product-ui.js?v=21"></script>
+
+    <!-- Main App Script -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🎬 DOM Ready - Initializing Series Zone!');
+        });
+
+        // Global page navigation
+        async function navigateToPage(pageName) {
+            const normalizedPage = pageName === 'browse' ? 'home-page' : `${pageName}-page`;
+            localStorage.setItem('series-zone-active-page', normalizedPage);
+
+            if (typeof window.ensureSeriesZoneBoot === 'function' && localStorage.getItem('currentUser')) {
+                const bootedApp = await window.ensureSeriesZoneBoot(normalizedPage);
+                bootedApp?.switchPage?.(normalizedPage);
+                return;
+            }
+
+            if (!window.app && typeof SeriesZoneApp !== 'undefined' && localStorage.getItem('currentUser')) {
+                try {
+                    window.app = new SeriesZoneApp();
+                    await window.app.init?.();
+                } catch (error) {
+                    console.error('Navigation bootstrap failed:', error);
+                }
+            }
+
+            if (window.app && window.app.switchPage) {
+                await window.app.init?.();
+                window.app.switchPage(normalizedPage);
+            }
+        }
+    </script>
+    <script>
+        window.addEventListener('load', async function() {
+            const savedUser = localStorage.getItem('currentUser');
+            const parsedUser = JSON.parse(savedUser || '{}');
+            const restoredPage = parsedUser?.role === 'admin'
+                ? (localStorage.getItem('series-zone-active-page') || 'admin-page')
+                : 'home-page';
+            if (savedUser && typeof window.ensureSeriesZoneBoot === 'function') {
+                await window.ensureSeriesZoneBoot(restoredPage);
+            } else if (savedUser && window.__seriesZoneBootPromise) {
+                await window.__seriesZoneBootPromise;
+            } else if (savedUser && typeof SeriesZoneApp !== 'undefined' && !window.app) {
+                try {
+                    window.__seriesZoneBootPromise = (async () => {
+                        window.app = new SeriesZoneApp();
+                        await window.app.init?.();
+                        window.app.ensureHomeContent?.();
+                    })();
+                    await window.__seriesZoneBootPromise;
+                } catch (error) {
+                    console.error('Series Zone guaranteed bootstrap failed:', error);
+                } finally {
+                    window.__seriesZoneBootPromise = null;
+                }
+            }
+
+            if (window.app && typeof window.app.switchPage === 'function') {
+                await window.app.init?.();
+                window.app.ensureHomeContent?.();
+                window.app.switchPage(restoredPage);
+            }
+        });
+    </script>
+</body>
+</html>

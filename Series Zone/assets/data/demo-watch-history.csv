@@ -1,0 +1,13 @@
+session_id,user_id,movie_id,movie_title,genre,total_duration_minutes,percentage_watched,status,device,start_time,end_time,day_of_week
+seed_session_001,viewer_seed_01,movie_1001,The Silent Code,Thriller,118,92,completed,Desktop,2026-04-01T20:10:00.000Z,2026-04-01T22:01:00.000Z,Tuesday
+seed_session_002,viewer_seed_01,movie_1002,Midnight Protocol,Sci-Fi,104,64,dropped,Mobile,2026-04-02T18:20:00.000Z,2026-04-02T19:27:00.000Z,Wednesday
+seed_session_003,viewer_seed_02,movie_1003,Neon District,Action,126,81,completed,Desktop,2026-04-02T21:05:00.000Z,2026-04-02T22:47:00.000Z,Wednesday
+seed_session_004,viewer_seed_03,movie_1004,Paper Moon Files,Drama,97,39,paused,Tablet,2026-04-03T16:00:00.000Z,2026-04-03T16:38:00.000Z,Thursday
+seed_session_005,viewer_seed_02,movie_1005,Velocity Run,Action,132,74,dropped,Desktop,2026-04-03T20:12:00.000Z,2026-04-03T21:49:00.000Z,Thursday
+seed_session_006,viewer_seed_03,movie_1006,Afterglow Hearts,Romance,109,88,completed,Mobile,2026-04-04T19:35:00.000Z,2026-04-04T21:11:00.000Z,Friday
+seed_session_007,viewer_seed_01,movie_1007,Quantum Harbor,Sci-Fi,121,57,dropped,Desktop,2026-04-04T22:10:00.000Z,2026-04-04T23:19:00.000Z,Friday
+seed_session_008,viewer_seed_04,movie_1008,Laugh Circuit,Comedy,95,84,completed,Desktop,2026-04-05T14:05:00.000Z,2026-04-05T15:25:00.000Z,Saturday
+seed_session_009,viewer_seed_02,movie_1009,Frontier Echo,Adventure,128,91,completed,Tablet,2026-04-05T17:18:00.000Z,2026-04-05T19:15:00.000Z,Saturday
+seed_session_010,viewer_seed_05,movie_1010,Rogue Tactics,Action,112,28,paused,Mobile,2026-04-05T21:40:00.000Z,2026-04-05T22:11:00.000Z,Saturday
+seed_session_011,viewer_seed_03,movie_1011,Blue Room,Drama,101,69,dropped,Desktop,2026-04-06T18:00:00.000Z,2026-04-06T19:10:00.000Z,Sunday
+seed_session_012,viewer_seed_04,movie_1012,Starline Reboot,Sci-Fi,134,95,completed,Desktop,2026-04-06T20:25:00.000Z,2026-04-06T22:32:00.000Z,Sunday
